@@ -1,41 +1,13 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/robotn/gohook"
-	"github.com/tarm/serial"
-	"log"
 )
-
-type Command struct {
-	Cmd  string `json:"cmd"`
-	Char uint8 `json:"char"`
-	X uint8 `json:"x"`
-	Y uint8 `json:"y"`
-}
 
 func main() {
 	// add()
 	// low()
-	c := &serial.Config{Name: "COM6", Baud: 9600}
-	s, err := serial.OpenPort(c)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	testCmd := &Command{
-		Cmd:  "mouse_move",
-		Char: 0,
-		X:    100,
-		Y:    100,
-	}
-	bytes, _ := json.Marshal(&testCmd)
-	_, err = s.Write(bytes)
-	if err != nil {
-		log.Fatal(err)
-	}
-
 }
 
 func add() {
