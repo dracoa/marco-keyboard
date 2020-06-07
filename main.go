@@ -3,11 +3,12 @@ package main
 import (
 	"fmt"
 	"github.com/robotn/gohook"
+	"log"
 )
 
 func main() {
 	// add()
-	// low()
+	low()
 }
 
 func add() {
@@ -17,10 +18,13 @@ func add() {
 		hook.End()
 	})
 
-	fmt.Println("--- Please press w---")
-	hook.Register(hook.KeyDown, []string{"w"}, func(e hook.Event) {
-		fmt.Println("w")
-	})
+	kTargets := []string{"1", "2", "3", "4"}
+	// mTargets := []string{}
+	for _, t := range kTargets {
+		hook.Register(hook.KeyDown, []string{t, "ctrl"}, func(e hook.Event) {
+			fmt.Println(e)
+		})
+	}
 
 	s := hook.Start()
 	<-hook.Process(s)
@@ -31,8 +35,6 @@ func low() {
 	defer hook.End()
 
 	for ev := range EvChan {
-		if ev.Kind == hook.KeyUp {
-			fmt.Println("hook: ", ev)
-		}
+		log.Print("hook: ", ev, ev.Mask, ev.Button, ev.Clicks, ev.X, ev.Y, ev.Direction)
 	}
 }
