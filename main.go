@@ -7,8 +7,8 @@ import (
 )
 
 func main() {
-	// add()
-	low()
+	add()
+	// low()
 }
 
 func add() {
@@ -19,12 +19,16 @@ func add() {
 	})
 
 	kTargets := []string{"1", "2", "3", "4"}
-	// mTargets := []string{}
 	for _, t := range kTargets {
 		hook.Register(hook.KeyDown, []string{t, "ctrl"}, func(e hook.Event) {
 			fmt.Println(e)
 		})
 	}
+	hook.Register(hook.MouseDown, []string{}, func(e hook.Event) {
+		if e.Clicks > 1 {
+			fmt.Println(e)
+		}
+	})
 
 	s := hook.Start()
 	<-hook.Process(s)
