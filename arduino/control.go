@@ -9,16 +9,16 @@ import (
 var s *serial.Port
 
 const (
-	KEY_WRITE       = 0x00
-	KEY_PRESS       = 0x01
-	KEY_RELEASE     = 0x02
-	KEY_RELEASE_ALL = 0x03
-	MOUSE_CLICK     = 0x04
-	MOUSE_PRESS     = 0x05
-	MOUSE_RELEASE   = 0x06
-	MOUSE_MOVE      = 0x07
-	MOUSE_LEFT      = 0x01
-	MOUSE_RIGHT     = 0x02
+	cmdKeyWrite     = 0x00
+	cmdKeyPress     = 0x01
+	cmdKeyRelease   = 0x02
+	cmdReleaseAll   = 0x03
+	cmdMouseClick   = 0x04
+	cmdMousePress   = 0x05
+	cmdMouseRelease = 0x06
+	cmdMouseMove    = 0x07
+	MouseLeft       = 0x01
+	MouseRight      = 0x02
 )
 
 func Open(port string) {
@@ -45,43 +45,44 @@ func BaseTest() {
 	KeyPress(61)
 	time.Sleep(1 * time.Second)
 	KeyReleaseAll()
-	time.Sleep(3 * time.Second)
-	MousePress(MOUSE_LEFT)
-	MouseRelease(MOUSE_LEFT)
-	time.Sleep(3 * time.Second)
-	MouseClick(MOUSE_RIGHT)
+	time.Sleep(5 * time.Second)
+	MousePress(MouseLeft)
+	MouseRelease(MouseLeft)
+	time.Sleep(5 * time.Second)
+	MouseMove(30, 30)
+	MouseClick(MouseRight)
 }
 
 func KeyWrite(x byte) {
-	write(KEY_WRITE, x)
+	write(cmdKeyWrite, x)
 }
 
 func KeyPress(x byte) {
-	write(KEY_PRESS, x)
+	write(cmdKeyPress, x)
 }
 
 func KeyRelease(x byte) {
-	write(KEY_RELEASE, x)
+	write(cmdKeyRelease, x)
 }
 
 func KeyReleaseAll() {
-	write(KEY_RELEASE_ALL, 0)
+	write(cmdReleaseAll, 0)
 }
 
 func MouseClick(x byte) {
-	write(MOUSE_CLICK, x)
+	write(cmdMouseClick, x)
 }
 
 func MousePress(x byte) {
-	write(MOUSE_PRESS, x)
+	write(cmdMousePress, x)
 }
 
 func MouseRelease(x byte) {
-	write(MOUSE_RELEASE, x)
+	write(cmdMouseRelease, x)
 }
 
 func MouseMove(x byte, y byte) {
-	write2(MOUSE_MOVE, x, y)
+	write2(cmdMouseMove, x, y)
 }
 
 func write(cmd byte, p1 byte) {
