@@ -10,12 +10,18 @@
     const ws = new WebSocket("ws://localhost:2303/wsEndpoint");
     ws.onopen = function (evt) {
         console.log("Connection open ...");
+        ws.send(`{"command":"StartReceiveEvent"}`)
         setInterval(() => ws.send(`{"command":"ScreenCapture"}`), 100);
     };
     ws.onmessage = function (evt) {
-        const urlCreator = window.URL || window.webkitURL;
-        const imageUrl = urlCreator.createObjectURL(evt.data);
-        document.querySelector("#image").src = imageUrl;
+        if (typeof evt.data === 'string') {
+            console.log(JSON.parse(evt.data));
+        } else {
+            const urlCreator = window.URL || window.webkitURL;
+            const imageUrl = urlCreator.createObjectURL(evt.data);
+            document.querySelector("#image").src = imageUrl;
+        }
+
     };
     ws.onclose = function (evt) {
         console.log("Connection closed.");
