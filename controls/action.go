@@ -13,8 +13,8 @@ type Action interface {
 type IntervalAction struct {
 	Control   Control `json:"control"`
 	On        bool
-	StopChan  chan bool
-	Ticker    *time.Ticker
+	Stop      bool
+	Interval  time.Duration
 	OnCommand *Command
 }
 
@@ -25,8 +25,8 @@ func NewIntervalAction(ctl Control) Action {
 	}
 	action := &IntervalAction{
 		Control:  ctl,
-		Ticker:   time.NewTicker(time.Duration(interval) * time.Second),
-		StopChan: make(chan bool),
+		Stop:     true,
+		Interval: time.Duration(interval) * time.Second,
 		OnCommand: &Command{
 			Name:      ctl.Action,
 			Parameter: ctl.Parameter,
@@ -38,21 +38,15 @@ func NewIntervalAction(ctl Control) Action {
 func (a *IntervalAction) Trigger() {
 	a.On = !a.On
 	if a.On {
+		a.Stop = false
 		go func() {
-			for {
-				select {
-				case <-a.Ticker.C:
-					in <- a.OnCommand
-				case stop := <-a.StopChan:
-					if stop {
-						return
-					}
-				}
+			for !a.Stop {
+				time.Sleep(a.Interval)
+				in <- a.OnCommand
 			}
-
 		}()
 	} else {
-		a.StopChan <- true
+		a.Stop = true
 	}
 }
 

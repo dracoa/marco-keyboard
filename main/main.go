@@ -29,7 +29,7 @@ func main() {
 	})
 
 	hook.Register(hook.MouseDown, []string{}, func(e hook.Event) {
-		if e.Clicks > 3 {
+		if e.Clicks > 1 {
 			trigger(fmt.Sprintf("mouse+%d", e.Button))
 		}
 	})

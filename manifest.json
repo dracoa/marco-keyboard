@@ -3,25 +3,34 @@
   "controls": [
     {
       "display": "Key 1",
-      "shortcut": "F2",
+      "shortcut": "F1",
       "trigger": "interval",
       "action": "key_write",
-      "interval": 1,
-      "parameter": "A"
+      "interval": 4,
+      "parameter": "1"
     },
     {
       "display": "Key 2",
+      "shortcut": "F2",
+      "trigger": "interval",
+      "action": "key_write",
+      "interval": 4,
+      "parameter": "1"
+    },
+    {
+      "display": "Mouse Left",
       "shortcut": "F3",
       "trigger": "long_press",
-      "action": "key_press",
-      "parameter": "2"
+      "action": "mouse_press",
+      "interval": 1,
+      "parameter": "right"
     },
     {
       "display": "Left Mouse Btn",
       "shortcut": "mouse+1",
       "trigger": "interval",
       "action": "mouse_click",
-      "parameter": "1"
+      "parameter": "right"
     },
     {
       "display": "Right Mouse Btn",

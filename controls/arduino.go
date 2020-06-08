@@ -1,7 +1,6 @@
 package controls
 
 import (
-	"fmt"
 	"github.com/tarm/serial"
 	"log"
 	"strings"
@@ -32,6 +31,15 @@ func processCommand(cmd *Command) []byte {
 		ch := cmd.Parameter.(string)
 		code = ch[0]
 	}
+	if strings.HasPrefix(cmd.Name, "mouse") {
+		ch := cmd.Parameter.(string)
+		switch ch {
+		case "right":
+			code = MouseRight
+		default:
+			code = MouseLeft
+		}
+	}
 	switch cmd.Name {
 	case "key_write":
 		return []byte{cmdKeyWrite, code}
@@ -39,8 +47,22 @@ func processCommand(cmd *Command) []byte {
 		return []byte{cmdKeyPress, code}
 	case "key_release":
 		return []byte{cmdKeyRelease, code}
+	case "mouse_click":
+		return []byte{cmdMouseClick, code}
+	case "mouse_press":
+		return []byte{cmdMousePress, code}
+	case "mouse_release":
+		return []byte{cmdMouseRelease, code}
 	}
 	return nil
+}
+
+func writeLine(port *serial.Port, bytes []byte) {
+	content := append(bytes, '\n')
+	_, err := port.Write(content)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func Listen(port string, in chan *Command) {
@@ -51,17 +73,14 @@ func Listen(port string, in chan *Command) {
 		log.Fatal(err)
 	}
 	go func() {
+		defer func() {
+			writeLine(s, []byte{cmdReleaseAll})
+			_ = s.Close()
+		}()
 		for {
 			c := <-in
 			cmdBytes := processCommand(c)
-			fmt.Println(cmdBytes)
-			if cmdBytes != nil {
-				_, err := s.Write(cmdBytes)
-				if err != nil {
-					panic(err)
-				}
-			}
+			writeLine(s, cmdBytes)
 		}
-		s.Close()
 	}()
 }
