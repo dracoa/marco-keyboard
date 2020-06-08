@@ -1,0 +1,34 @@
+{
+  "port": "COM4",
+  "controls": [
+    {
+      "display": "Key 1",
+      "shortcut": "F2",
+      "trigger": "interval",
+      "action": "key_write",
+      "interval": 1,
+      "parameter": "A"
+    },
+    {
+      "display": "Key 2",
+      "shortcut": "F3",
+      "trigger": "long_press",
+      "action": "key_press",
+      "parameter": "2"
+    },
+    {
+      "display": "Left Mouse Btn",
+      "shortcut": "mouse+1",
+      "trigger": "interval",
+      "action": "mouse_click",
+      "parameter": "1"
+    },
+    {
+      "display": "Right Mouse Btn",
+      "shortcut": "mouse+2",
+      "trigger": "long_press",
+      "action": "key_press",
+      "parameter": "1"
+    }
+  ]
+}

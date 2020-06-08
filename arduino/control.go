@@ -31,11 +31,11 @@ func Open(port string) {
 }
 
 func Close() {
-	s.Close()
+	_ = s.Close()
 }
 
 func BaseTest() {
-	Open("COM6")
+	Open("COM4?>")
 	defer Close()
 
 	KeyWrite(63)

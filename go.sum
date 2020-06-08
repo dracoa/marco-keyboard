@@ -1,3 +1,5 @@
+github.com/joho/godotenv v1.3.0 h1:Zjp+RcGpHhGlrMbJzXTrZZPrWj+1vfm90La1wgB6Bhc=
+github.com/joho/godotenv v1.3.0/go.mod h1:7hK45KPybAkOC6peb+G5yklZfMxEjkZhHbwpqxOKXbg=
 github.com/robotn/gohook v0.30.2 h1:PbG/N24ycg3lEfl6+UpGumC/jnuHL9gJCy2jMGbQKhA=
 github.com/robotn/gohook v0.30.2/go.mod h1:cWEhn477y4+4/D1SXIDPhivGSNsZT4dcco3uLTVBa6g=
 github.com/tarm/serial v0.0.0-20180830185346-98f6abe2eb07 h1:UyzmZLoiDWMRywV4DUYb9Fbt8uiOSooupjTq10vpvnU=
