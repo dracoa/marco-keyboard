@@ -40,6 +40,16 @@ func Register() map[string]Action {
 		} else {
 			act = NewLongPressAction(ctl)
 		}
+		switch ctl.Trigger {
+		case "interval":
+			act = NewIntervalAction(ctl)
+		case "long_press":
+			act = NewLongPressAction(ctl)
+		case "one_shot":
+			act = NewOneShotAction(ctl)
+		default:
+			panic("invalid trigger code " + ctl.Trigger)
+		}
 		actions[ctl.Shortcut] = act
 	}
 	return actions

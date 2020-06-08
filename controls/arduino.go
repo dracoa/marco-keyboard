@@ -25,7 +25,6 @@ const (
 )
 
 func processCommand(cmd *Command) []byte {
-	log.Println(cmd)
 	var code byte
 	if strings.HasPrefix(cmd.Name, "key") {
 		ch := cmd.Parameter.(string)
@@ -53,7 +52,10 @@ func processCommand(cmd *Command) []byte {
 		return []byte{cmdMousePress, code}
 	case "mouse_release":
 		return []byte{cmdMouseRelease, code}
+	case "reset":
+		return []byte{cmdReleaseAll, '\n', cmdMouseRelease, MouseLeft, '\n', cmdMouseRelease, MouseRight}
 	}
+	log.Println(cmd)
 	return nil
 }
 
@@ -74,13 +76,18 @@ func Listen(port string, in chan *Command) {
 	}
 	go func() {
 		defer func() {
-			writeLine(s, []byte{cmdReleaseAll})
+			writeLine(s, processCommand(&Command{
+				Name:      "reset",
+				Parameter: nil,
+			}))
 			_ = s.Close()
 		}()
 		for {
 			c := <-in
 			cmdBytes := processCommand(c)
-			writeLine(s, cmdBytes)
+			if cmdBytes != nil {
+				writeLine(s, cmdBytes)
+			}
 		}
 	}()
 }

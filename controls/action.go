@@ -81,6 +81,26 @@ func (a *LongPressAction) Trigger() {
 	}
 }
 
+type OneShotAction struct {
+	Control   Control `json:"control"`
+	OnCommand *Command
+}
+
+func NewOneShotAction(ctl Control) Action {
+	action := &OneShotAction{
+		Control: ctl,
+		OnCommand: &Command{
+			Name:      ctl.Action,
+			Parameter: ctl.Parameter,
+		},
+	}
+	return action
+}
+
+func (a *OneShotAction) Trigger() {
+	in <- a.OnCommand
+}
+
 func InverseAction(action string) string {
 	if strings.HasSuffix(action, "_press") {
 		parts := strings.Split(action, "_")

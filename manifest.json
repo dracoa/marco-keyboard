@@ -2,42 +2,51 @@
   "port": "COM4",
   "controls": [
     {
-      "display": "Key 1",
+      "display": "Skill 1",
       "shortcut": "F1",
       "trigger": "interval",
-      "action": "key_write",
       "interval": 4,
+      "action": "key_write",
       "parameter": "1"
     },
     {
-      "display": "Key 2",
+      "display": "Skill 2",
       "shortcut": "F2",
       "trigger": "interval",
-      "action": "key_write",
-      "interval": 4,
-      "parameter": "1"
-    },
-    {
-      "display": "Mouse Left",
-      "shortcut": "F3",
-      "trigger": "long_press",
-      "action": "mouse_press",
       "interval": 1,
-      "parameter": "right"
+      "action": "key_write",
+      "parameter": "2"
     },
     {
-      "display": "Left Mouse Btn",
-      "shortcut": "mouse+1",
+      "display": "Skill 3",
+      "shortcut": "F3",
       "trigger": "interval",
-      "action": "mouse_click",
-      "parameter": "right"
+      "interval": 1,
+      "action": "key_write",
+      "parameter": "3"
     },
     {
-      "display": "Right Mouse Btn",
+      "display": "Skill 4",
+      "shortcut": "F4",
+      "trigger": "interval",
+      "interval": 1,
+      "action": "key_write",
+      "parameter": "4"
+    },
+    {
+      "display": "Left Skill",
+      "shortcut": "F5",
+      "trigger": "interval",
+      "interval": 1,
+      "action": "mouse_press",
+      "parameter": "left"
+    },
+    {
+      "display": "Right Skill",
       "shortcut": "mouse+2",
       "trigger": "long_press",
-      "action": "key_press",
-      "parameter": "1"
+      "action": "mouse_press",
+      "parameter": "right"
     }
   ]
 }
