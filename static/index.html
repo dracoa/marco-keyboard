@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<img id="image"/>
+<script>
+    const ws = new WebSocket("ws://localhost:2303/wsEndpoint");
+    ws.onopen = function (evt) {
+        console.log("Connection open ...");
+        setInterval(() => ws.send(`{"command":"ScreenCapture"}`), 100);
+    };
+    ws.onmessage = function (evt) {
+        const urlCreator = window.URL || window.webkitURL;
+        const imageUrl = urlCreator.createObjectURL(evt.data);
+        document.querySelector("#image").src = imageUrl;
+    };
+    ws.onclose = function (evt) {
+        console.log("Connection closed.");
+    };
+</script>
+</body>
+</html>

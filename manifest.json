@@ -39,7 +39,7 @@
       "trigger": "long_press",
       "action": "key_press",
       "parameter": "5"
-    }2413
+    },
     {
       "display": "Left Skill",
       "shortcut": "F6",

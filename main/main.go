@@ -1,45 +1,75 @@
 package main
 
 import (
-	"fmt"
-	hook "github.com/robotn/gohook"
-	"marco-keyboard/controls"
+	"encoding/json"
+	"log"
+	"marco-keyboard/screen"
+	"marco-keyboard/websvr"
 )
 
-func main() {
+type WebRequest struct {
+	Command   string      `json:"command"`
+	Parameter interface{} `json:"parameter"`
+}
 
-	actions := controls.Register()
-	trigger := func(key string) {
-		if fn, ok := actions[key]; ok {
-			fn.Trigger()
+type MouseEvent struct {
+	EventType  string `json:"event_type"`
+	ButtonCode string `json:"button_code"`
+}
+
+type KeyEvent struct {
+	EventType string `json:"event_type"`
+	KeyCode   string `json:"key_code"`
+}
+
+var handlers = make(map[string]func(interface{}) []byte)
+
+func main() {
+	log.Println("Keyboard Control Server v1.0.0")
+	server := websvr.Start("localhost:2303")
+	handlers["KeyboardAction"] = KeyboardAction
+	handlers["MouseAction"] = MouseAction
+	handlers["ScreenCapture"] = ScreenCapture
+	for {
+		select {
+		case income := <-server.In:
+			req := &WebRequest{}
+			_ = json.Unmarshal(income, &req)
+			if val, ok := handlers[req.Command]; ok {
+				server.Out <- val(req.Parameter)
+			} else {
+				panic("command not found: " + req.Command)
+			}
 		}
 	}
-	/*
-		go func(){
-			for {
-				for k, v := range actions {
-					fmt.Printf("%s %t \t", k, v.Status())
-				}
-				fmt.Println()
-				time.Sleep(time.Second)
-			}
-		}()
-	*/
-	fmt.Println("--- Please press ctrl + shift + q to stop hook ---")
-	hook.Register(hook.KeyUp, []string{"q", "ctrl", "shift"}, func(e hook.Event) {
-		fmt.Println("quit hook")
-		hook.End()
-	})
-	hook.Register(hook.KeyUp, []string{}, func(e hook.Event) {
-		if e.Rawcode >= 112 && e.Rawcode <= 123 {
-			trigger(fmt.Sprintf("F%d", e.Rawcode-111))
-		}
-	})
-	hook.Register(hook.MouseDown, []string{}, func(e hook.Event) {
-		trigger(fmt.Sprintf("mouse+%d_%d", e.Button, e.Clicks))
-	})
+}
 
-	s := hook.Start()
-	<-hook.Process(s)
+func KeyboardAction(para interface{}) []byte {
+	keyEvent := &KeyEvent{}
+	bytes, err := json.Marshal(para)
+	if err != nil {
+		panic(err)
+	}
+	err = json.Unmarshal(bytes, &keyEvent)
+	if err != nil {
+		panic(err)
+	}
+	return []byte(`{}`)
+}
 
+func MouseAction(para interface{}) []byte {
+	mouseEvent := &MouseEvent{}
+	bytes, err := json.Marshal(para)
+	if err != nil {
+		panic(err)
+	}
+	err = json.Unmarshal(bytes, &mouseEvent)
+	if err != nil {
+		panic(err)
+	}
+	return []byte(`{}`)
+}
+
+func ScreenCapture(para interface{}) []byte {
+	return screen.Capture()
 }
