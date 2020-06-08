@@ -47,6 +47,20 @@
       "trigger": "long_press",
       "action": "mouse_press",
       "parameter": "right"
+    },
+    {
+      "display": "All On",
+      "shortcut": "F11",
+      "trigger": "one_shot",
+      "action": "all_on",
+      "parameter": ""
+    },
+    {
+      "display": "All Off",
+      "shortcut": "F12",
+      "trigger": "one_shot",
+      "action": "all_off",
+      "parameter": ""
     }
   ]
 }

@@ -32,7 +32,7 @@ func init() {
 }
 
 func Register() map[string]Action {
-	var actions = make(map[string]Action)
+	actions = make(map[string]Action)
 	for _, ctl := range manifest.Controls {
 		var act Action
 		if ctl.Trigger == "interval" {
