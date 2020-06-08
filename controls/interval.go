@@ -27,6 +27,10 @@ func NewIntervalAction(ctl Control) Action {
 	return action
 }
 
+func (a *IntervalAction) Status() bool {
+	return a.On
+}
+
 func (a *IntervalAction) TurnOn() {
 	if !a.On {
 		a.Trigger()

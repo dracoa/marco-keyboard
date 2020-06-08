@@ -22,6 +22,10 @@ func NewLongPressAction(ctl Control) Action {
 	return action
 }
 
+func (a *LongPressAction) Status() bool {
+	return a.On
+}
+
 func (a *LongPressAction) TurnOn() {
 	if !a.On {
 		a.Trigger()

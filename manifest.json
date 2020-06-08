@@ -43,7 +43,7 @@
     },
     {
       "display": "Right Skill",
-      "shortcut": "mouse+2",
+      "shortcut": "mouse+2_2",
       "trigger": "long_press",
       "action": "mouse_press",
       "parameter": "right"
@@ -60,6 +60,13 @@
       "shortcut": "F12",
       "trigger": "one_shot",
       "action": "all_off",
+      "parameter": ""
+    },
+    {
+      "display": "All Toggle",
+      "shortcut": "mouse+3_1",
+      "trigger": "one_shot",
+      "action": "all_toggle",
       "parameter": ""
     }
   ]

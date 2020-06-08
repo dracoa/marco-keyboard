@@ -9,6 +9,7 @@ type Action interface {
 	Trigger()
 	TurnOn()
 	TurnOff()
+	Status() bool
 }
 
 var actions = make(map[string]Action)

@@ -14,7 +14,17 @@ func main() {
 			fn.Trigger()
 		}
 	}
-
+	/*
+		go func(){
+			for {
+				for k, v := range actions {
+					fmt.Printf("%s %t \t", k, v.Status())
+				}
+				fmt.Println()
+				time.Sleep(time.Second)
+			}
+		}()
+	*/
 	fmt.Println("--- Please press ctrl + shift + q to stop hook ---")
 	hook.Register(hook.KeyUp, []string{"q", "ctrl", "shift"}, func(e hook.Event) {
 		fmt.Println("quit hook")
@@ -26,9 +36,7 @@ func main() {
 		}
 	})
 	hook.Register(hook.MouseDown, []string{}, func(e hook.Event) {
-		if e.Clicks > 1 {
-			trigger(fmt.Sprintf("mouse+%d", e.Button))
-		}
+		trigger(fmt.Sprintf("mouse+%d_%d", e.Button, e.Clicks))
 	})
 
 	s := hook.Start()
