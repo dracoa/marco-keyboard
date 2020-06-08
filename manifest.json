@@ -1,11 +1,11 @@
 {
-  "port": "COM4",
+  "port": "COM12",
   "controls": [
     {
       "display": "Skill 1",
       "shortcut": "F1",
       "trigger": "interval",
-      "interval": 4,
+      "interval": 1,
       "action": "key_write",
       "parameter": "1"
     },
@@ -36,9 +36,16 @@
     {
       "display": "Left Skill",
       "shortcut": "F5",
+      "trigger": "long_press",
+      "action": "key_press",
+      "parameter": "5"
+    }2413
+    {
+      "display": "Left Skill",
+      "shortcut": "F6",
       "trigger": "interval",
-      "interval": 1,
-      "action": "mouse_press",
+      "interval": 4,
+      "action": "mouse_click",
       "parameter": "left"
     },
     {
@@ -64,7 +71,7 @@
     },
     {
       "display": "All Toggle",
-      "shortcut": "mouse+3_1",
+      "shortcut": "mouse+4_1",
       "trigger": "one_shot",
       "action": "all_toggle",
       "parameter": ""

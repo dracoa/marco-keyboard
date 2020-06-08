@@ -35,11 +35,6 @@ func Register() map[string]Action {
 	actions = make(map[string]Action)
 	for _, ctl := range manifest.Controls {
 		var act Action
-		if ctl.Trigger == "interval" {
-			act = NewIntervalAction(ctl)
-		} else {
-			act = NewLongPressAction(ctl)
-		}
 		switch ctl.Trigger {
 		case "interval":
 			act = NewIntervalAction(ctl)

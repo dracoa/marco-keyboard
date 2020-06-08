@@ -55,7 +55,6 @@ func processCommand(cmd *Command) []byte {
 	case "reset":
 		return []byte{cmdReleaseAll, '\n', cmdMouseRelease, MouseLeft, '\n', cmdMouseRelease, MouseRight}
 	}
-	log.Println(cmd)
 	return nil
 }
 
