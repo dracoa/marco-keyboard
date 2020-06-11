@@ -24,7 +24,7 @@ type MicroRobot struct {
 }
 
 func Connect(name string) *MicroRobot {
-	c := &serial.Config{Name: name, Baud: 9600, ReadTimeout: 500}
+	c := &serial.Config{Name: name, Baud: 9600, ReadTimeout: 1000}
 	port, err := serial.OpenPort(c)
 	if err != nil {
 		log.Println(err)
@@ -36,15 +36,12 @@ func Connect(name string) *MicroRobot {
 		return nil
 	}
 	bs := make([]byte, 5)
-	bt, err := port.Read(bs)
+	_, err = port.Read(bs)
 	if err != nil {
 		log.Println(err)
 		panic(err)
 	}
-	if bt > 0 {
-		return &MicroRobot{port: port}
-	}
-	return nil
+	return &MicroRobot{port: port}
 }
 
 func (r *MicroRobot) Disconnect() error {
