@@ -1,34 +1,39 @@
 package keyhook
 
 import (
-	"context"
-	"github.com/reactivex/rxgo/v2"
 	hook "github.com/robotn/gohook"
+	"log"
 )
 
-var observable rxgo.Observable
+type Command struct{}
 
-func init() {
-	ch := make(chan rxgo.Item)
+func Start() chan Command {
+	out := make(chan Command)
+	ctrl := false
+	buffer := make([]byte, 0)
 	go func() {
 		EvChan := hook.Start()
 		defer hook.End()
 		for ev := range EvChan {
-			ch <- rxgo.Item{
-				V: ev,
-				E: nil,
+			if ev.Kind >= 3 && ev.Kind <= 5 {
+				if ctrl {
+					if ev.Rawcode == 162 && ev.Kind == 5 {
+						log.Println(buffer)
+						buffer = make([]byte, 0)
+						ctrl = false
+					}
+				} else {
+					if ev.Rawcode == 162 && ev.Kind == 4 {
+						ctrl = true
+					}
+				}
+				if ev.Kind == 5 && ev.Rawcode != 162 {
+					if ctrl {
+						buffer = append(buffer, byte(ev.Rawcode))
+					}
+				}
 			}
 		}
 	}()
-	observable = rxgo.FromChannel(ch)
-}
-
-func KeyboardHook() rxgo.Observable {
-	return observable.Filter(func(item interface{}) bool {
-		e := item.(hook.Event)
-		return e.Mask == 8 && e.Kind == 5
-	}).Map(func(context context.Context, item interface{}) (interface{}, error) {
-		e := item.(hook.Event)
-		return e.Rawcode, nil
-	})
+	return out
 }
