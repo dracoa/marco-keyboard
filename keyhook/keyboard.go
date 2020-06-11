@@ -17,19 +17,18 @@ func Start() chan Command {
 		for ev := range EvChan {
 			if ev.Kind >= 3 && ev.Kind <= 5 {
 				if ctrl {
-					if ev.Rawcode == 162 && ev.Kind == 5 {
-						log.Println(buffer)
-						buffer = make([]byte, 0)
-						ctrl = false
+					if ev.Kind == 5 {
+						if ev.Rawcode == 162 {
+							log.Println(buffer)
+							buffer = make([]byte, 0)
+							ctrl = false
+						} else {
+							buffer = append(buffer, byte(ev.Rawcode))
+						}
 					}
 				} else {
 					if ev.Rawcode == 162 && ev.Kind == 4 {
 						ctrl = true
-					}
-				}
-				if ev.Kind == 5 && ev.Rawcode != 162 {
-					if ctrl {
-						buffer = append(buffer, byte(ev.Rawcode))
 					}
 				}
 			}
