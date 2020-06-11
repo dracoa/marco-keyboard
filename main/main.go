@@ -1,46 +1,46 @@
 package main
 
 import (
-	"encoding/json"
-	"github.com/robotn/gohook"
+	"fmt"
 	"log"
-	"marco-keyboard/screen"
-	"marco-keyboard/websvr"
+	"marco-keyboard/keyhook"
+	"marco-keyboard/microrobot"
+	"strings"
 )
 
-type WebRequest struct {
-	Command   string      `json:"command"`
-	Parameter interface{} `json:"parameter"`
-}
+const Version = "0.0.0"
 
-var onReceive bool
+func init() {}
 
 func main() {
-	log.Println("Keyboard Control Server v1.0.0")
-	server := websvr.Start("localhost:2303")
+	log.Printf("Version: %s", Version)
+	robot := robot()
+	if robot == nil {
+		log.Fatal("No micro keyboard found.")
+	}
+	defer robot.Disconnect()
 
-	go func() {
-		EvChan := hook.Start()
-		defer hook.End()
-		for ev := range EvChan {
-			if onReceive {
-				server.SendJson(ev)
-			}
+	keyhook.KeyboardHook().ForEach(func(v interface{}) {
+		fmt.Printf("%v", v)
+	}, func(err error) {
+		fmt.Printf("error: %e\n", err)
+	}, func() {
+		fmt.Println("observable is closed")
+	})
+
+	select {}
+}
+
+func robot() *microrobot.MicroRobot {
+	var robot *microrobot.MicroRobot
+	for com, name := range ListSerial() {
+		if strings.Contains(name, "USB") {
+			log.Printf("Testing connect to %s: %s", com, name)
+			robot = microrobot.Connect(com)
 		}
-	}()
-
-	for {
-		select {
-		case income := <-server.In:
-			req := &WebRequest{}
-			_ = json.Unmarshal(income, &req)
-			if req.Command == "ScreenCapture" {
-				server.SendBinary(screen.Capture())
-			} else if req.Command == "StartReceiveEvent" {
-				onReceive = true
-			} else {
-				onReceive = false
-			}
+		if robot != nil {
+			return robot
 		}
 	}
+	return nil
 }

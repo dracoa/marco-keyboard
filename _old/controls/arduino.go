@@ -12,14 +12,15 @@ type Command struct {
 }
 
 const (
-	cmdKeyWrite     = 0x00
-	cmdKeyPress     = 0x01
-	cmdKeyRelease   = 0x02
-	cmdReleaseAll   = 0x03
-	cmdMouseClick   = 0x04
-	cmdMousePress   = 0x05
-	cmdMouseRelease = 0x06
-	cmdMouseMove    = 0x07
+	cmdEcho         = 0x00
+	cmdKeyWrite     = 0x01
+	cmdKeyPress     = 0x02
+	cmdKeyRelease   = 0x03
+	cmdReleaseAll   = 0x04
+	cmdMouseClick   = 0x05
+	cmdMousePress   = 0x06
+	cmdMouseRelease = 0x07
+	cmdMouseMove    = 0x08
 	MouseLeft       = 0x01
 	MouseRight      = 0x02
 )

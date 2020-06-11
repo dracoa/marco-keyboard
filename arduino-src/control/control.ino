@@ -2,13 +2,16 @@
 #include "Mouse.h"
 
 typedef void (*FuncPtr)(uint8_t p1, uint8_t p2);
-FuncPtr controls[]={&key_write, &key_press, &key_release, &key_releaseAll, &mouse_click, &mouse_press, &mouse_release, &mouse_move};
+FuncPtr controls[]={&echo, &key_write, &key_press, &key_release, &key_releaseAll, &mouse_click, &mouse_press, &mouse_release, &mouse_move};
 
 void setup() {
-  // initialize serial:
   Serial.begin(9600);
   Mouse.begin();
   Keyboard.begin();
+}
+
+void echo(uint8_t p1, uint8_t p2){
+  Serial.print(p1);
 }
 
 void key_write(uint8_t p1, uint8_t p2) {
@@ -43,12 +46,11 @@ void mouse_release(uint8_t p1, uint8_t p2) {
 
 void mouse_move(uint8_t p1, uint8_t p2) {
    Mouse.move(p1, p2);
-   
 }
+
 void loop() {
   while (Serial.available()) {
     String json = Serial.readStringUntil('\n');
-    Serial.println(json);
     char cmd = json.charAt(0);
     char p1 = json.charAt(1);
     char p2 = json.charAt(2);
