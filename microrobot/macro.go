@@ -1,4 +1,4 @@
-package main
+package microrobot
 
 import (
 	hook "github.com/robotn/gohook"

@@ -1,4 +1,4 @@
-package main
+package microrobot
 
 import (
 	"golang.org/x/sys/windows/registry"

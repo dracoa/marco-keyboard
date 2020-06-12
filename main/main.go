@@ -15,6 +15,7 @@ const Version = "0.0.0"
 type WsCommand struct {
 	Cmd     string `json:"cmd"`
 	Screen  int    `json:"screen"`
+	Quality int    `json:"quality"`
 	KeyCode byte   `json:"key_code"`
 	PosX    byte   `json:"pos_x"`
 	PosY    byte   `json:"pos_y"`
@@ -24,7 +25,7 @@ func init() {}
 
 func main() {
 	log.Printf("Version: %s", Version)
-	server := websvr.Start("localhost:8088")
+	server := websvr.Start(":8088")
 	robot := robot()
 	if robot == nil {
 		log.Fatal("No micro keyboard found.")
@@ -37,7 +38,7 @@ func main() {
 			req := &WsCommand{}
 			_ = json.Unmarshal(income, &req)
 			if req.Cmd == "screen_capture" {
-				server.SendBinary(screen.CaptureScreen(req.Screen))
+				server.SendBinary(screen.CaptureScreen(req.Screen, req.Quality))
 			} else if req.Cmd == "mouse_move" {
 				_ = robot.MouseMove(req.PosX, req.PosY)
 			} else {
@@ -68,7 +69,7 @@ func executeEvent(robot *microrobot.MicroRobot, event string, keyCode byte) erro
 }
 
 func startHook(server *websvr.Server) {
-	out := Start()
+	out := microrobot.Start()
 	for {
 		select {
 		case cmd := <-out:
@@ -79,7 +80,7 @@ func startHook(server *websvr.Server) {
 
 func robot() *microrobot.MicroRobot {
 	var robot *microrobot.MicroRobot
-	for com, name := range ListSerial() {
+	for com, name := range microrobot.ListSerial() {
 		if strings.Contains(name, "USB") {
 			log.Printf("Testing connect to %s: %s", com, name)
 			robot = microrobot.Connect(com)
