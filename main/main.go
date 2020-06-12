@@ -1,82 +1,78 @@
 package main
 
 import (
+	"encoding/json"
+	"errors"
 	"log"
-	"marco-keyboard/keyhook"
 	"marco-keyboard/microrobot"
+	"marco-keyboard/screen"
+	"marco-keyboard/websvr"
 	"strings"
 )
 
 const Version = "0.0.0"
 
+type WsCommand struct {
+	Cmd     string `json:"cmd"`
+	Screen  int    `json:"screen"`
+	KeyCode byte   `json:"key_code"`
+	PosX    byte   `json:"pos_x"`
+	PosY    byte   `json:"pos_y"`
+}
+
 func init() {}
-
-type Macro struct {
-	Interval byte
-	KeyCode  byte
-	On       bool
-	Robot    *microrobot.MicroRobot
-}
-
-func (m *Macro) on() {
-	if m.Interval == 0 {
-		_ = m.Robot.KeyPress(m.KeyCode)
-		log.Printf("start %d", m.KeyCode)
-	}
-	m.On = true
-}
-
-func (m *Macro) off() {
-	if m.Interval == 0 {
-		_ = m.Robot.KeyRelease(m.KeyCode)
-		log.Printf("stop %d", m.KeyCode)
-	}
-	m.On = false
-}
-
-func (m *Macro) Toggle() {
-	if m.On {
-		m.off()
-	} else {
-		m.on()
-	}
-}
-
-func (m *Macro) Config(interval []byte) {
-	log.Printf("%d - %v", m.KeyCode, interval)
-}
-
-var macros = make(map[byte]*Macro)
 
 func main() {
 	log.Printf("Version: %s", Version)
+	server := websvr.Start("localhost:8088")
 	robot := robot()
 	if robot == nil {
 		log.Fatal("No micro keyboard found.")
 	}
 	defer robot.Disconnect()
-	startHook(robot)
+	go startHook(server)
+	for {
+		select {
+		case income := <-server.In:
+			req := &WsCommand{}
+			_ = json.Unmarshal(income, &req)
+			if req.Cmd == "screen_capture" {
+				server.SendBinary(screen.CaptureScreen(req.Screen))
+			} else if req.Cmd == "mouse_move" {
+				_ = robot.MouseMove(req.PosX, req.PosY)
+			} else {
+				_ = executeEvent(robot, req.Cmd, req.KeyCode)
+			}
+		}
+	}
 }
 
-func startHook(robot *microrobot.MicroRobot) {
-	out := keyhook.Start()
+func executeEvent(robot *microrobot.MicroRobot, event string, keyCode byte) error {
+	switch event {
+	case "key_write":
+		return robot.KeyWrite(keyCode)
+	case "key_press":
+		return robot.KeyPress(keyCode)
+	case "key_release":
+		return robot.KeyRelease(keyCode)
+	case "key_release_all":
+		return robot.KeyReleaseAll()
+	case "mouse_click":
+		return robot.MouseClick(keyCode)
+	case "mouse_press":
+		return robot.MousePress(keyCode)
+	case "mouse_release":
+		return robot.MouseRelease(keyCode)
+	}
+	return errors.New("invalid command")
+}
+
+func startHook(server *websvr.Server) {
+	out := Start()
 	for {
 		select {
 		case cmd := <-out:
-			key := cmd.Parameter[0]
-			if _, ok := macros[key]; !ok {
-				macros[key] = &Macro{
-					Interval: 0,
-					KeyCode:  key,
-					On:       false,
-					Robot:    robot,
-				}
-			}
-			if cmd.Config {
-				macros[key].Config(cmd.Parameter[1:])
-			} else {
-				macros[key].Toggle()
-			}
+			server.SendJson(cmd)
 		}
 	}
 }

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
+	"log"
 	"net/http"
 )
 
@@ -68,7 +69,8 @@ func (s *Server) wsEndpoint(c *gin.Context) {
 			case msg := <-s.Out:
 				err = ws.WriteMessage(msg.MessageType, msg.Data)
 				if err != nil {
-					break
+					log.Println("out", err)
+					return
 				}
 			}
 		}
@@ -77,8 +79,10 @@ func (s *Server) wsEndpoint(c *gin.Context) {
 	for {
 		_, message, err := ws.ReadMessage()
 		if err != nil {
+			log.Println("in", err)
 			break
 		}
 		s.In <- message
 	}
+	log.Println("disconnected")
 }

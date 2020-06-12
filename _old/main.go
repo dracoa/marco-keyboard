@@ -28,9 +28,9 @@ func main() {
 			case income := <-server.In:
 				req := &WebRequest{}
 				_ = json.Unmarshal(income, &req)
-				if req.Command == "ScreenCapture" {
+				if req.Cmd == "ScreenCapture" {
 					server.SendBinary(screen.Capture())
-				} else if req.Command == "StartReceiveEvent" {
+				} else if req.Cmd == "StartReceiveEvent" {
 					onReceive = true
 				} else {
 					onReceive = false
