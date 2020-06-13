@@ -10,9 +10,7 @@ func Start() chan hook.Event {
 		EvChan := hook.Start()
 		defer hook.End()
 		for ev := range EvChan {
-			if ev.Kind == 5 || ev.Kind == 8 || ev.Kind == 9 {
-				out <- ev
-			}
+			out <- ev
 		}
 	}()
 	return out

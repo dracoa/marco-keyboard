@@ -45,15 +45,15 @@ void mouse_release(uint8_t p1, uint8_t p2) {
 }
 
 void mouse_move(uint8_t p1, uint8_t p2) {
-   Mouse.move(p1, p2);
+   Mouse.move(p1 - 128, p2 - 128);
 }
 
 void loop() {
   while (Serial.available()) {
     String json = Serial.readStringUntil('\n');
-    char cmd = json.charAt(0);
-    char p1 = json.charAt(1);
-    char p2 = json.charAt(2);
+    uint8_t cmd = json.charAt(0);
+    uint8_t p1 = json.charAt(1);
+    uint8_t p2 = json.charAt(2);
     controls[cmd](p1, p2);
   }
 }
