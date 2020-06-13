@@ -25,13 +25,17 @@ func init() {}
 
 func main() {
 	log.Printf("Version: %s", Version)
-	server := websvr.Start(":8088")
+
 	robot := robot()
 	if robot == nil {
 		log.Fatal("No micro keyboard found.")
 	}
 	defer robot.Disconnect()
+
+	server := websvr.Start(":8088")
+
 	go startHook(server)
+
 	for {
 		select {
 		case income := <-server.In:
