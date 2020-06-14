@@ -5,6 +5,8 @@ typedef void (*FuncPtr)(uint8_t p1, uint8_t p2);
 FuncPtr controls[]={&echo, &key_write, &key_press, &key_release, &key_releaseAll, &mouse_click, &mouse_press, &mouse_release, &mouse_move};
 
 void setup() {
+  bitClear(DDRD,5);
+  bitClear(DDRB,0);
   Serial.begin(9600);
   Mouse.begin();
   Keyboard.begin();
